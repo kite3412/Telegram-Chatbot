@@ -3,7 +3,7 @@
 from flask import Flask, request, render_template
 import google.generativeai as genai
 
-key = "AIzaSyDYYd7ahsBVYLirEkaR-rJdXvWvz9459Gw"
+key = ""
 genai.configure(api_key=key)
 model = genai.GenerativeModel("gemini-2.0-flash")
 
