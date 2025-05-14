@@ -3,6 +3,9 @@
 from flask import Flask, request, render_template
 import google.generativeai as genai
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 gemini_api_key = os.getenv("gemini_api_key")
 
