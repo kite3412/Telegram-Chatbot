@@ -76,5 +76,10 @@ def logout():
     first_time = 1
     return(render_template("index.html"))
 
+@app.route("/paynow",methods=["GET","POST"])
+def paynow():
+    return(render_template("paynow.html"))
+
+
 if __name__ == "__main__":
     app.run()
