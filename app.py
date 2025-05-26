@@ -80,6 +80,14 @@ def logout():
 def paynow():
     return(render_template("paynow.html"))
 
+@app.route("/prediction",methods=["GET","POST"])
+def prediction():
+    return(render_template("prediction.html"))
+
+@app.route("/prediction_reply",methods=["GET","POST"])
+def prediction_reply():
+    q = float(request.form.get("q"))
+    return(render_template("prediction_reply.html", r=90.2 + (-50.6*q)))
 
 if __name__ == "__main__":
     app.run()
