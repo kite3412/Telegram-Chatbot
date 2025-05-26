@@ -3,3 +3,4 @@ gunicorn
 google-generativeai
 dotenv
 pysqlite3
+requests
