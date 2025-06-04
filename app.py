@@ -108,10 +108,9 @@ def start_telegram():
     webhook_response = requests.post(set_webhook_url, json={"url": domain_url, "drop_pending_updates": True})
     print('webhook:', webhook_response)
     if webhook_response.status_code == 200:
-        # set status message
-        return "❌ Failed to start the Telegram bot. Please check the logs."
+        return(render_template("telegram_success.html"))
     else:
-        return "❌ Failed to start the Telegram bot. Please check the logs."
+        return(render_template("telegram_fail.html"))
 
 @app.route("/telegram",methods=["GET","POST"])
 def telegram():
