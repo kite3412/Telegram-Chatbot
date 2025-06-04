@@ -108,6 +108,9 @@ def start_telegram():
     webhook_response = requests.post(set_webhook_url, json={"url": domain_url, "drop_pending_updates": True})
     print('webhook:', webhook_response)
     if webhook_response.status_code == 200:
+        r_text = "Welcome to the Chatbot! Start asking your questions or type <code>quit</code> to exit."
+        send_message_url = f"https://api.telegram.org/bot{gemini_telegram_token}/sendMessage"
+        requests.post(send_message_url, data={"chat_id": chat_id, "text": r_text, "parse_mode": "HTML"})
         return(render_template("telegram_success.html"))
     else:
         return(render_template("telegram_fail.html"))
@@ -120,10 +123,9 @@ def telegram():
         chat_id = update["message"]["chat"]["id"]
         text = update["message"]["text"]
 
-        if text == "/start":
-            r_text = "Welcome to the Chatbot! Start asking your questions or type *quit* to exit."
-        elif text == "quit":
+        if text == "quit":
             r_text = "Thanks you for using the Chatbot, bye."
+            break
         else:
             # Process the message and generate a response
             system_prompt = "Reply limits to 50 words"
@@ -134,14 +136,8 @@ def telegram():
             )
             r_text = r.text
         
-        # Send the response back to the user
         send_message_url = f"https://api.telegram.org/bot{gemini_telegram_token}/sendMessage"
-        requests.post(send_message_url, data={"chat_id": chat_id, "text": r_text, "parse_mode": "Markdown"})
-    # Return a 200 OK response to Telegram
-    # This is important to acknowledge the receipt of the message
-    # and prevent Telegram from resending the message
-    # if the server doesn't respond in time
-    return('ok', 200)
+        requests.post(send_message_url, data={"chat_id": chat_id, "text": r_text, "parse_mode": "HTML"})
 
 if __name__ == "__main__":
     app.run()
