@@ -11,8 +11,8 @@ import datetime
 
 load_dotenv()
 
-gemini_api_key = os.getenv("gemini_api_key")
-gemini_telegram_token = os.getenv('gemini_telegram_token')
+gemini_api_key = os.getenv("GEMINI_API_KEY")
+gemini_telegram_token = os.getenv("GEMINI_TELEGRAM_TOKEN")
 
 genai1.configure(api_key=gemini_api_key)
 model = genai1.GenerativeModel("gemini-2.0-flash")
@@ -109,11 +109,9 @@ def start_telegram():
     print('webhook:', webhook_response)
     if webhook_response.status_code == 200:
         # set status message
-        status = "The telegram bot is running. Please check with the telegram bot. @dsai_bw_gemini_bot"
+        return "❌ Failed to start the Telegram bot. Please check the logs."
     else:
-        status = "Failed to start the telegram bot. Please check the logs."
-    
-    return(render_template("telegram.html", status=status))
+        return "❌ Failed to start the Telegram bot. Please check the logs."
 
 @app.route("/telegram",methods=["GET","POST"])
 def telegram():
@@ -124,10 +122,12 @@ def telegram():
         text = update["message"]["text"]
 
         if text == "/start":
-            r_text = "Welcome to the Gemini Telegram Bot! You can ask me any finance-related questions."
+            r_text = "Welcome to the Chatbot! Start asking your questions or type *quit* to exit."
+        elif text == "quit":
+            r_text = "Thanks you for using the Chatbot, bye."
         else:
             # Process the message and generate a response
-            system_prompt = "You are a financial expert.  Answer ONLY questions related to finance, economics, investing, and financial markets. If the question is not related to finance, state that you cannot answer it."
+            system_prompt = "Reply limits to 50 words"
             prompt = f"{system_prompt}\n\nUser Query: {text}"
             r = genmini_client.models.generate_content(
                 model=genmini_model,
@@ -137,7 +137,7 @@ def telegram():
         
         # Send the response back to the user
         send_message_url = f"https://api.telegram.org/bot{gemini_telegram_token}/sendMessage"
-        requests.post(send_message_url, data={"chat_id": chat_id, "text": r_text})
+        requests.post(send_message_url, data={"chat_id": chat_id, "text": r_text, parse_mode: "Markdown"})
     # Return a 200 OK response to Telegram
     # This is important to acknowledge the receipt of the message
     # and prevent Telegram from resending the message
