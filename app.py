@@ -88,9 +88,9 @@ def telegram():
         chat_id = update["message"]["chat"]["id"]
         text = update["message"]["text"]
 
-        if text == "/start":
-            r_text = "Welcome to the Chatbot! Start asking your first question or type <code>quit</code> to exit."
-        elif text == "quit":
+        if str.lower(text) == "/start":
+            r_text = "Welcome to the Chatbot! Start asking your first question or type **quit** to exit."
+        elif str.lower(text) == "quit":
             r_text = "Thanks you for using the Chatbot, bye."
         else:
             system_prompt = "Reply limits to 100 words"
@@ -102,7 +102,7 @@ def telegram():
             r_text = r.text
         
         send_message_url = f"https://api.telegram.org/bot{gemini_telegram_token}/sendMessage"
-        requests.post(send_message_url, data={"chat_id": chat_id, "text": r_text, "parse_mode": "HTML"})
+        requests.post(send_message_url, data={"chat_id": chat_id, "text": r_text, "parse_mode": "Markdown"})
         
     return('ok', 200)
 
