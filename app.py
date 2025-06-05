@@ -11,8 +11,8 @@ load_dotenv()
 gemini_api_key = os.getenv("GEMINI_API_KEY")
 gemini_telegram_token = os.getenv("GEMINI_TELEGRAM_TOKEN")
 
-genai.configure(api_key=gemini_api_key)
-model = genai.GenerativeModel("gemini-2.0-flash")
+gemini_client = genai.Client(api_key=gemini_api_key)
+gemini_model = "gemini-2.0-flash"
 
 app = Flask(__name__)
 
@@ -95,8 +95,8 @@ def telegram():
         else:
             system_prompt = "Reply limits to 100 words"
             prompt = f"{system_prompt}\n\nUser Query: {text}"
-            r = genmini_client.models.generate_content(
-                model=genmini_model,
+            r = gemini_client.models.generate_content(
+                model=gemini_model,
                 contents=prompt
             )
             r_text = r.text
