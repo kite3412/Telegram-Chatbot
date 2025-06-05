@@ -42,12 +42,10 @@ def user_log():
     conn = sqlite3.connect('user.db')
     c = conn.cursor()
     c.execute("select * from users")
-    r=""
-    for row in c:
-        r= r+str(row)
+    logs = c.fetchall()
     c.close()
     conn.close()
-    return(render_template("user_log.html", r=r))
+    return(render_template("user_log.html", logs=logs))
 
 @app.route("/delete_log",methods=["GET","POST"])
 def delete_log():
