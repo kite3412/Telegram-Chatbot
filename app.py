@@ -89,7 +89,7 @@ def telegram():
         text = update["message"]["text"]
 
         if str.lower(text) == "/start":
-            r_text = "Welcome to the Chatbot! Start asking your first question or type **quit** to exit."
+            r_text = "Welcome to the Chatbot! Start asking your first question or type *quit* to exit."
         elif str.lower(text) == "quit":
             r_text = "Thanks you for using the Chatbot, bye."
         else:
