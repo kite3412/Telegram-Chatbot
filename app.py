@@ -1,9 +1,6 @@
-# Gemini
-
 from flask import Flask, request, render_template
 import requests
-import google.generativeai as genai1
-from google import genai
+import google.generativeai as genai
 import os
 from dotenv import load_dotenv
 import sqlite3
@@ -14,16 +11,14 @@ load_dotenv()
 gemini_api_key = os.getenv("GEMINI_API_KEY")
 gemini_telegram_token = os.getenv("GEMINI_TELEGRAM_TOKEN")
 
-genai1.configure(api_key=gemini_api_key)
-model = genai1.GenerativeModel("gemini-2.0-flash")
-genmini_client = genai.Client(api_key=gemini_api_key)
-genmini_model = "gemini-2.0-flash"
+genai.configure(api_key=gemini_api_key)
+model = genai.GenerativeModel("gemini-2.0-flash")
 
 app = Flask(__name__)
 
 first_time = 1
 
-@app.route("/", methods=["Get", "Post"]) # start point
+@app.route("/", methods=["Get", "Post"])
 def index():
     return(render_template("index.html"))
 
@@ -41,17 +36,6 @@ def main():
         conn.close()
         first_time = 0
     return(render_template("main.html"))
-
-@app.route("/gemini",methods=["GET","POST"])
-def gemini():
-    return(render_template("gemini.html"))
-
-@app.route("/gemini_reply",methods=["GET","POST"])
-def gemini_reply():
-    q = request.form.get("q")
-    r = model.generate_content(q)
-    r = r.text
-    return(render_template("gemini_reply.html", r=r))
 
 @app.route("/user_log",methods=["GET","POST"])
 def user_log():
@@ -75,35 +59,20 @@ def delete_log():
     conn.close()
     return(render_template("delete_log.html"))
 
-@app.route("/logout", methods=["Get", "Post"]) # start point
+@app.route("/logout", methods=["Get", "Post"])
 def logout():
     global first_time
     first_time = 1
     return(render_template("index.html"))
-
-@app.route("/paynow",methods=["GET","POST"])
-def paynow():
-    return(render_template("paynow.html"))
-
-@app.route("/prediction",methods=["GET","POST"])
-def prediction():
-    return(render_template("prediction.html"))
-
-@app.route("/prediction_reply",methods=["GET","POST"])
-def prediction_reply():
-    q = float(request.form.get("q"))
-    return(render_template("prediction_reply.html", r=90.2 + (-50.6*q)))
 
 @app.route("/start_telegram",methods=["GET","POST"])
 def start_telegram():
 
     domain_url = os.getenv('WEBHOOK_URL')
 
-    # The following line is used to delete the existing webhook URL for the Telegram bot
     delete_webhook_url = f"https://api.telegram.org/bot{gemini_telegram_token}/deleteWebhook"
     requests.post(delete_webhook_url, json={"url": domain_url, "drop_pending_updates": True})
     
-    # Set the webhook URL for the Telegram bot
     set_webhook_url = f"https://api.telegram.org/bot{gemini_telegram_token}/setWebhook?url={domain_url}/telegram"
     webhook_response = requests.post(set_webhook_url, json={"url": domain_url, "drop_pending_updates": True})
     print('webhook:', webhook_response)
@@ -116,17 +85,15 @@ def start_telegram():
 def telegram():
     update = request.get_json()
     if "message" in update and "text" in update["message"]:
-        # Extract the chat ID and message text from the update
         chat_id = update["message"]["chat"]["id"]
         text = update["message"]["text"]
 
         if text == "/start":
-            r_text = "Welcome to the Chatbot! Start asking your questions or type <code>quit</code> to exit."
+            r_text = "Welcome to the Chatbot! Start asking your first question or type <code>quit</code> to exit."
         elif text == "quit":
             r_text = "Thanks you for using the Chatbot, bye."
         else:
-            # Process the message and generate a response
-            system_prompt = "Reply limits to 50 words"
+            system_prompt = "Reply limits to 100 words"
             prompt = f"{system_prompt}\n\nUser Query: {text}"
             r = genmini_client.models.generate_content(
                 model=genmini_model,

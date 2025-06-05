@@ -4,4 +4,3 @@ google-generativeai
 dotenv
 pysqlite3
 requests
-google-genai
