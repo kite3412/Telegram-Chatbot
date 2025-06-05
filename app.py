@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template
 import requests
-import google.generativeai as genai
+from google import genai
 import os
 from dotenv import load_dotenv
 import sqlite3

@@ -1,6 +1,6 @@
 flask
 gunicorn
-google-generativeai
+google-genai
 dotenv
 pysqlite3
 requests
