@@ -10,7 +10,7 @@
 
         <form action="/main" method="post">
             <p>Please enter your user name: </p>
-            <input type = "text" name="q" required>           
+            <input type = "text" name="q" required oninvalid="this.setCustomValidity('Please enter your username.')" oninput="this.setCustomValidity('')">           
             <input type="submit" value="Enter">
         
         </form>
